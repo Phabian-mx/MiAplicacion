@@ -1,3 +1,4 @@
+package com.example.miaplicacion
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -10,20 +11,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Enlazamos las vistas del XML con Kotlin
+        // aqui se conecta el diseño de la pantalla con el código
         val cajaTexto = findViewById<EditText>(R.id.etInput)
         val boton = findViewById<Button>(R.id.btnAccion)
         val label = findViewById<TextView>(R.id.tvLabel)
 
-        // Acción al presionar el botón
+        // Acción al momento de  presionar el botón
         boton.setOnClickListener {
-            // 1. Obtener el texto de la caja
+            // Guarda el texto que puso el usuario
             val textoIngresado = cajaTexto.text.toString()
 
-            // 2. Pasar el texto al label
+            //  Pasar el texto al label
             label.text = textoIngresado
 
-            // 3. Mostrar la alerta tipo pop-up
+            //  se Configura la alerta emergente
             val builder = AlertDialog.Builder(this)
             builder.setTitle("¡Éxito!")
             builder.setMessage("El texto se ha transferido correctamente.")
