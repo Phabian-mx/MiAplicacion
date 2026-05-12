@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Mi Aplicacion</string>
+    <string name="titulo">Mi Aplicación</string>
+    <string name="hint_texto">Escribe un texto</string>
+    <string name="boton_mostrar">Mostrar Texto</string>
+    <string name="texto_resultado">Aquí aparecerá el texto</string>
+</resources>
