@@ -24,4 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Mi aplicacion"
 include(":app")
- 
+include(":reloj")
