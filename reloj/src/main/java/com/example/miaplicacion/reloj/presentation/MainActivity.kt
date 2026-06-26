@@ -36,4 +36,19 @@ class MainActivity : ComponentActivity() {
             startActivity(intent)
         }
     }
+    override fun onRestart() {
+        super.onRestart()
+        // Cuando regresas de la Ventana 2 a esta, la música se detiene de inmediato
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.stop()
+        }
+        // Volvemos a inicializar el audio para dejarlo listo por si vuelven a presionar el botón
+        mediaPlayer = MediaPlayer.create(this, R.raw.sonido)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Si el usuario cierra la aplicación por completo, liberamos la memoria del reproductor
+        mediaPlayer.release()
+    }
 }
