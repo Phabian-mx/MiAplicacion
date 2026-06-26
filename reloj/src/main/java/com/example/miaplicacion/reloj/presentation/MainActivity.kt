@@ -9,20 +9,20 @@ import android.os.Vibrator
 import android.media.MediaPlayer
 
 
+
 class MainActivity : ComponentActivity() {
     private lateinit var vibrator: Vibrator
     private lateinit var mediaPlayer: MediaPlayer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        setContentView(com.example.miaplicacion.reloj.R.layout.activity_main)
+        setContentView(R.layout.activity_main)
 
         vibrator = getSystemService(android.content.Context.VIBRATOR_SERVICE) as Vibrator
         mediaPlayer = MediaPlayer.create(this, R.raw.sonido)
-        // 1. Buscamos el botón por el ID exacto de tu reloj ("btnAccionReloj")
-        val boton: Button = findViewById(R.id.btnAccionReloj)
 
+        // Buscamos el botón usando la referencia limpia de R
+        val boton: Button = findViewById(R.id.btnAccionReloj)
 
         boton.setOnClickListener {
             if (vibrator.hasVibrator()) {
@@ -32,10 +32,14 @@ class MainActivity : ComponentActivity() {
                 mediaPlayer.start()
             }
 
-            val intent = android.content.Intent(this, Prueba::class.java)
+            // Abrimos la pantalla Prueba de forma limpia y segura para Wear OS
+            val intent = android.content.Intent(this, Prueba::class.java).apply {
+                addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
             startActivity(intent)
         }
     }
+
     override fun onRestart() {
         super.onRestart()
         // Cuando regresas de la Ventana 2 a esta, la música se detiene de inmediato
