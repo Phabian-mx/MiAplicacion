@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.miaplicacion.reloj"
+    namespace = "com.example.miaplicacion"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.miaplicacion.reloj"
+        applicationId = "com.example.miaplicacion"
         minSdk = 35
         targetSdk = 36
         versionCode = 1

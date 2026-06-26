@@ -4,13 +4,16 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import com.example.miaplicacion.reloj.R
+import com.example.miaplicacion.R
 import android.os.Vibrator
 import android.media.MediaPlayer
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.Wearable
 
 
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), MessageClient.OnMessageReceivedListener {
     private lateinit var vibrator: Vibrator
     private lateinit var mediaPlayer: MediaPlayer
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +24,7 @@ class MainActivity : ComponentActivity() {
         vibrator = getSystemService(android.content.Context.VIBRATOR_SERVICE) as Vibrator
         mediaPlayer = MediaPlayer.create(this, R.raw.sonido)
 
-        // Buscamos el botón usando la referencia limpia de R
+
         val boton: Button = findViewById(R.id.btnAccionReloj)
 
         boton.setOnClickListener {
@@ -32,27 +35,41 @@ class MainActivity : ComponentActivity() {
                 mediaPlayer.start()
             }
 
-            // Abrimos la pantalla Prueba de forma limpia y segura para Wear OS
+
             val intent = android.content.Intent(this, Prueba::class.java).apply {
                 addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             startActivity(intent)
         }
     }
+    override fun onResume() {
+        super.onResume()
+        Wearable.getMessageClient(this).addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Wearable.getMessageClient(this).removeListener(this)
+    }
 
     override fun onRestart() {
         super.onRestart()
-        // Cuando regresas de la Ventana 2 a esta, la música se detiene de inmediato
         if (mediaPlayer.isPlaying) {
             mediaPlayer.stop()
         }
-        // Volvemos a inicializar el audio para dejarlo listo por si vuelven a presionar el botón
-        mediaPlayer = MediaPlayer.create(this, R.raw.sonido)
+       mediaPlayer = MediaPlayer.create(this, R.raw.sonido)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        // Si el usuario cierra la aplicación por completo, liberamos la memoria del reproductor
-        mediaPlayer.release()
+       mediaPlayer.release()
+    }
+    override fun onMessageReceived(event: MessageEvent) {
+        if (event.path == "/chat_celular") {
+            val mensajeCelular = String(event.data, Charsets.UTF_8)
+            runOnUiThread {
+                Toast.makeText(this, "Cel dice: $mensajeCelular", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

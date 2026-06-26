@@ -12,8 +12,13 @@ import android.content.Context
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
+import com.example.miaplicacion.R
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.MessageEvent
+import com.google.android.gms.wearable.Wearable
+import android.widget.Toast
 
-class Prueba : ComponentActivity(), SensorEventListener {
+class Prueba : ComponentActivity(), SensorEventListener, MessageClient.OnMessageReceivedListener {
     private lateinit var sensorManager: SensorManager
     private var sensorGiroscopio: Sensor? = null
     private var sensorPresion: Sensor? = null
@@ -27,14 +32,14 @@ class Prueba : ComponentActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+       setContentView(com.example.miaplicacion.R.layout.prueba)
 
-        setContentView(com.example.miaplicacion.reloj.R.layout.prueba)
-// Enlazar los TextViews que pusiste en el XML
-        tvLuz = findViewById(com.example.miaplicacion.reloj.R.id.tvLuz)
-        tvPresion = findViewById(com.example.miaplicacion.reloj.R.id.tvPresion)
-        tvAcelerometro = findViewById(com.example.miaplicacion.reloj.R.id.tvAcelerometro)
 
-        // 2. MODIFICACIÓN AQUÍ: Inicializar el sistema de sensores de forma segura
+        tvLuz = findViewById(com.example.miaplicacion.R.id.tvLuz)
+        tvPresion = findViewById(com.example.miaplicacion.R.id.tvPresion)
+        tvAcelerometro = findViewById(com.example.miaplicacion.R.id.tvAcelerometro)
+
+
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
         sensorGiroscopio = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
@@ -46,17 +51,31 @@ class Prueba : ComponentActivity(), SensorEventListener {
         sensorAcelerometro = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         if (sensorAcelerometro == null) tvAcelerometro.text = "Acel: No disponible en este reloj"
 
-        val btnVolver = findViewById<Button>(com.example.miaplicacion.reloj.R.id.btnVolverReloj)
+
+        val btnVolver = findViewById<Button>(com.example.miaplicacion.R.id.btnVolverReloj)
         btnVolver.setOnClickListener {
             finish()
 
         }
+        val btnResponder = findViewById<Button>(com.example.miaplicacion.R.id.btnResponderCelular)
+        btnResponder.setOnClickListener {
+            // 1. Extraemos los valores actuales que están escritos en los TextViews
+            val datosGiro = tvLuz.text.toString()
+            val datosPresion = tvPresion.text.toString()
+            val datosAcel = tvAcelerometro.text.toString()
+
+           val mensajeCompleto = "Datos del Reloj:\n$datosGiro\n$datosPresion\n$datosAcel"
+
+
+            responderAlCelular(mensajeCompleto)
+        }
     }
 
     override fun onResume() {
+        Wearable.getMessageClient(this).addListener(this)
         super.onResume()
 
-       if (ActivityCompat.checkSelfPermission(
+        if (ActivityCompat.checkSelfPermission(
                 this,
                 android.Manifest.permission.ACTIVITY_RECOGNITION
             ) != PackageManager.PERMISSION_GRANTED
@@ -67,7 +86,6 @@ class Prueba : ComponentActivity(), SensorEventListener {
                 1001
             )
         }
-
 
         sensorGiroscopio?.let {
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
@@ -80,13 +98,12 @@ class Prueba : ComponentActivity(), SensorEventListener {
         }
     }
 
-
     override fun onPause() {
+        Wearable.getMessageClient(this).removeListener(this)
         super.onPause()
         sensorManager.unregisterListener(this)
     }
 
-    // Recibir los datos de los sensores en tiempo real
     override fun onSensorChanged(event: SensorEvent?) {
         if (event == null) return
 
@@ -112,14 +129,29 @@ class Prueba : ComponentActivity(), SensorEventListener {
         }
     }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
-    }
-
-    // Dejamos el método de permisos limpio para evitar conflictos con el sistema de Samsung
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    private fun responderAlCelular(mensaje: String) {
+        val payload = mensaje.toByteArray(Charsets.UTF_8)
+        Wearable.getNodeClient(this).connectedNodes.addOnSuccessListener { nodos ->
+            for (nodo in nodos) {
+                Wearable.getMessageClient(this).sendMessage(nodo.id, "/chat_reloj", payload)
+            }
+        }
+    }
+
+    override fun onMessageReceived(event: MessageEvent) {
+        if (event.path == "/chat_celular") {
+            val mensajeCelular = String(event.data, Charsets.UTF_8)
+            runOnUiThread {
+                Toast.makeText(this, "Cel dice: $mensajeCelular", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
