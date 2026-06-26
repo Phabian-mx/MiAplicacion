@@ -2,19 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="32dp"
+    android:background="@drawable/fondo_cel"
     android:gravity="center"
-    android:background="@drawable/fondo_cel">
+    android:orientation="vertical"
+    android:padding="32dp">
 
     <EditText
         android:id="@+id/etInput"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Escribe un mensaje aquí"
+        android:inputType="text"
         android:textColor="#000000"
-        android:textColorHint="#555555"
-        android:inputType="text" />
+        android:textColorHint="#555555" />
 
     <Button
         android:id="@+id/btnAccion"
@@ -23,13 +23,29 @@
         android:layout_marginTop="16dp"
         android:text="Enviar mensaje" />
 
+    <Button
+        android:id="@+id/btnGet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#81C784"
+        android:text="Ejecutar Petición GET" />
+
+    <Button
+        android:id="@+id/btnPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#64B5F6"
+        android:text="Ejecutar Petición POST" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="32dp"
         android:background="#F1F5F9"
-        android:scrollbars="vertical"
-        android:fadeScrollbars="false">
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical">
 
         <TextView
             android:id="@+id/tvLabel"

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:background="@drawable/fondo_uno"
     android:padding="16dp">
 
@@ -11,16 +12,28 @@
         android:id="@+id/tvTituloReloj"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Segunda ventana"
+        android:layout_marginTop="32dp"
+        android:text="Sensores"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="12dp"
-        android:textColor="#FFFFFF"/>
+        android:textStyle="bold" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/btnAccionReloj"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Prueba" />
+        android:layout_marginBottom="11dp"
+        android:textSize="10sp"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="10dp"
+        android:text="Entrar"
+        tools:ignore="TouchTargetSizeCheck" />
 
 </LinearLayout>

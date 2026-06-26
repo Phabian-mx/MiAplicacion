@@ -45,4 +45,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
     implementation("com.google.android.gms:play-services-wearable:19.0.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
 }
